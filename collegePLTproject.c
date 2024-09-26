@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define MAX_PATIENTS 5
 #define MAX_APPOINTMENTS 5
@@ -13,9 +15,40 @@ struct Patient {
 // Structure to store appointment information
 struct Appointment {
     int patientId;
-    char date[20];   // Date format can be "DD/MM/YYYY"
+    char date[11];   // Date format can be "DD/MM/YYYY" (10 characters + null terminator)
     char doctor[100];  // Doctor's name
 };
+
+// Function to check if a date is valid
+int isValidDate(const char *date) {
+    int day, month, year;
+    if (sscanf(date, "%d/%d/%d", &day, &month, &year) != 3) {
+        return 0; // Invalid format
+    }
+
+    // Check month range
+    if (month < 1 || month > 12) return 0;
+
+    // Check day range based on month
+    int daysInMonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
+        daysInMonth[2] = 29; // Leap year
+    }
+
+    if (day < 1 || day > daysInMonth[month]) return 0;
+
+    return 1; // Valid date
+}
+
+// Function to check if patient ID is unique
+int isUniquePatientId(struct Patient patients[], int patientCount, int id) {
+    for (int i = 0; i < patientCount; i++) {
+        if (patients[i].id == id) {
+            return 0; // ID is not unique
+        }
+    }
+    return 1; // ID is unique
+}
 
 // Function to add a new patient
 void addPatient(struct Patient patients[], int *patientCount) {
@@ -24,8 +57,16 @@ void addPatient(struct Patient patients[], int *patientCount) {
         return;
     }
 
-    printf("Enter patient ID: ");
-    scanf("%d", &patients[*patientCount].id);
+    int id;
+    printf("Enter patient ID (5-digit number): ");
+    scanf("%d", &id);
+
+    if (id < 10000 || id > 99999 || !isUniquePatientId(patients, *patientCount, id)) {
+        printf("Invalid patient ID. It must be a unique 5-digit number.\n");
+        return;
+    }
+
+    patients[*patientCount].id = id;
     printf("Enter patient name: ");
     scanf("%s", patients[*patientCount].name);
     printf("Enter patient age: ");
@@ -72,12 +113,20 @@ void bookAppointment(struct Appointment appointments[], struct Patient patients[
         return;
     }
 
+    char date[11];
     printf("Enter appointment date (DD/MM/YYYY): ");
-    scanf("%s", appointments[*appointmentCount].date);
+    scanf("%s", date);
+
+    if (!isValidDate(date)) {
+        printf("Invalid date format or date does not exist.\n");
+        return;
+    }
+
     printf("Enter doctor's name: ");
     scanf("%s", appointments[*appointmentCount].doctor);
 
     appointments[*appointmentCount].patientId = patientId;
+    strcpy(appointments[*appointmentCount].date, date);
     (*appointmentCount)++;
 
     printf("Appointment booked successfully.\n");
