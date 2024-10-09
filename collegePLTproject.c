@@ -10,7 +10,7 @@ struct Patient {
     int id;
     char name[100];
     int age;
-};
+}
 
 // Structure to store appointment information
 struct Appointment {
@@ -19,7 +19,7 @@ struct Appointment {
     char doctor[100];  // Doctor's name
 };
 
-// Function to check if a date is valid
+// Function to check if a date is valid // 
 int isValidDate(const char *date) {
     int day, month, year;
     if (sscanf(date, "%d/%d/%d", &day, &month, &year) != 3) {
@@ -32,7 +32,7 @@ int isValidDate(const char *date) {
     // Check day range based on month
     int daysInMonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
-        daysInMonth[2] = 29; // Leap year
+        daysInMonth[2] = 29; // Leap year // 
     }
 
     if (day < 1 || day > daysInMonth[month]) return 0;
@@ -76,7 +76,7 @@ void addPatient(struct Patient patients[], int *patientCount) {
     printf("Patient added successfully.\n");
 }
 
-// Function to display all patients
+// Function to display all patients //
 void displayPatients(struct Patient patients[], int patientCount) {
     if (patientCount == 0) {
         printf("No patients in the hospital.\n");
@@ -89,7 +89,7 @@ void displayPatients(struct Patient patients[], int patientCount) {
     }
 }
 
-// Function to book an appointment
+// Function to book an appointment //
 void bookAppointment(struct Appointment appointments[], struct Patient patients[], int *appointmentCount, int patientCount) {
     if (*appointmentCount >= MAX_APPOINTMENTS) {
         printf("No more appointments can be booked.\n");
@@ -182,7 +182,7 @@ int main() {
             default:
                 printf("Invalid choice.\n");
         }
-    } while (choice != 5);
+    } while (choice != 5); 
 
     return 0;
 }
